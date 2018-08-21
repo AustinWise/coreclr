@@ -40,7 +40,6 @@ public:
     BOOL    m_fNewMembers;
 
     MethodList			m_MethodList;
-    //MethodSortedList    m_MethodSList;
     FieldDList          m_FieldDList;	
     EventDList          m_EventDList;
     PropDList           m_PropDList;

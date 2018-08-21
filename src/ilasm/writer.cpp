@@ -1387,29 +1387,21 @@ HRESULT Assembler::CreatePEFile(__in __nullterminated WCHAR *pwzOutputFilename)
         if (m_dwCeeFileFlags & ICEE_CREATE_MACHINE_I386)
             COR_SET_32BIT_REQUIRED(m_dwComImageFlags);
     }
-    if (m_fWindowsCE)
+
+    if (m_dwCeeFileFlags & ICEE_CREATE_MACHINE_ARM || m_fAppContainer)
     {
-        if (FAILED(hr=m_pCeeFileGen->SetSubsystem(m_pCeeFile, IMAGE_SUBSYSTEM_WINDOWS_CE_GUI, 2, 10))) goto exit;
+        // For AppContainer and ARM, you must have a minimum subsystem version of 6.02
+        m_wSSVersionMajor = (m_wSSVersionMajor < 6) ? 6 : m_wSSVersionMajor;
+        m_wSSVersionMinor = (m_wSSVersionMinor < 2 && m_wSSVersionMajor <= 6) ? 2 : m_wSSVersionMinor;
 
-        if (FAILED(hr=m_pCeeFileGen->SetImageBase(m_pCeeFile, 0x10000))) goto exit;
     }
-    else
-    {
-        if (m_dwCeeFileFlags & ICEE_CREATE_MACHINE_ARM || m_fAppContainer)
-        {
-            // For AppContainer and ARM, you must have a minimum subsystem version of 6.02
-            m_wSSVersionMajor = (m_wSSVersionMajor < 6) ? 6 : m_wSSVersionMajor;
-            m_wSSVersionMinor = (m_wSSVersionMinor < 2 && m_wSSVersionMajor <= 6) ? 2 : m_wSSVersionMinor;
 
-        }
+    // Default the subsystem, instead the user doesn't set it to GUI or CUI
+    if (m_dwSubsystem == (DWORD)-1)
+        // The default for ILAsm previously was CUI, so that should be the default behavior...
+        m_dwSubsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
 
-        // Default the subsystem, instead the user doesn't set it to GUI or CUI
-        if (m_dwSubsystem == (DWORD)-1)
-            // The default for ILAsm previously was CUI, so that should be the default behavior...
-            m_dwSubsystem = IMAGE_SUBSYSTEM_WINDOWS_CUI;
-
-        if (FAILED(hr=m_pCeeFileGen->SetSubsystem(m_pCeeFile, m_dwSubsystem, m_wSSVersionMajor, m_wSSVersionMinor))) goto exit;
-    }
+    if (FAILED(hr = m_pCeeFileGen->SetSubsystem(m_pCeeFile, m_dwSubsystem, m_wSSVersionMajor, m_wSSVersionMinor))) goto exit;
 
     if (FAILED(hr=m_pCeeFileGen->ClearComImageFlags(m_pCeeFile, COMIMAGE_FLAGS_ILONLY))) goto exit;
     if (FAILED(hr=m_pCeeFileGen->SetComImageFlags(m_pCeeFile, m_dwComImageFlags & ~COMIMAGE_FLAGS_STRONGNAMESIGNED))) goto exit;

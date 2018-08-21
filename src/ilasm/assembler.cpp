@@ -658,7 +658,6 @@ void Assembler::StartMethod(__in __nullterminated char* name, BinStr* sig, CorMe
                 {
                     // reset for new body
                     pMethod->m_lstFixup.RESET(true);
-                    //pMethod->m_lstLabel.RESET(true);
                     m_lstLabel.RESET(true);
                     pMethod->m_Locals.RESET(true);
                     delArgNameList(pMethod->m_firstArgName);
@@ -794,7 +793,6 @@ void Assembler::EndMethod()
     {
         report->error("Method '%s' compilation failed.\n",m_pCurMethod->m_szName);
     }
-    //m_pCurMethod->m_lstLabel.RESET(true);
     m_lstLabel.RESET(true);
     m_tkCurrentCVOwner = 0;
     m_pCustomDescrList = m_CustomDescrListStack.POP();
@@ -1464,11 +1462,6 @@ void Assembler::EmitOpcode(Instr* instr)
     instr->opcode = -1;
 }
 
-/**************************************************************************/
-//void Assembler::OptimizeInstr(Instr* instr, int var)
-//{
-
-//}
 /**************************************************************************/
 unsigned Assembler::ShortOf(unsigned opcode)
 {

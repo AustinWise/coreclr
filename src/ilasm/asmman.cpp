@@ -56,10 +56,6 @@ AsmManFile*         AsmMan::GetFileByName(__in __nullterminated char* szFileName
     AsmManFile* ret = NULL;
     if(szFileName)
     {
-        //AsmManFile X;
-        //X.szName = szFileName;
-        //ret = m_FileLst.FIND(&X);
-        //X.szName = NULL;
         for(int i=0; (ret = m_FileLst.PEEK(i))&&strcmp(ret->szName,szFileName); i++);
     }
     return ret;
@@ -77,10 +73,6 @@ AsmManComType*          AsmMan::GetComTypeByName(__in_opt __nullterminated char*
     AsmManComType*  ret = NULL;
     if(szComTypeName)
     {
-        //AsmManComType X;
-        //X.szName = szComTypeName;
-        //ret = m_ComTypeLst.FIND(&X);
-        //X.szName = NULL;
         for(int i=0; (ret = m_ComTypeLst.PEEK(i)) != NULL; i++)
         {
             if (strcmp(ret->szName, szComTypeName) == 0)
@@ -116,10 +108,6 @@ AsmManAssembly*     AsmMan::GetAsmRefByName(__in __nullterminated const char* sz
     AsmManAssembly* ret = NULL;
     if(szAsmRefName)
     {
-        //AsmManAssembly X;
-        //X.szAlias = szAsmRefName;
-        //ret = m_AsmRefLst.FIND(&X);
-        //X.szAlias = NULL;
         DWORD L = (DWORD)strlen(szAsmRefName);
         for(int i=0; (ret = m_AsmRefLst.PEEK(i))&&
             ((ret->dwAlias != L)||strcmp(ret->szAlias,szAsmRefName)); i++);
@@ -829,7 +817,6 @@ void    AsmMan::SetManifestResAsmRef(__in __nullterminated char* szAsmRefName)
 
 HRESULT AsmMan::EmitManifest()
 {
-    //AsmManAssembly*           pAsmRef;
     AsmManComType*          pComType;
     AsmManRes*              pManRes;
     HRESULT                 hr = S_OK;

@@ -666,8 +666,6 @@ extern "C" int _cdecl wmain(int argc, __in WCHAR **argv)
                         if(pAsm->m_fReportProgress)
                         {
                             pParser->msg("\nAssembling '%s' ", szInputFilename);
-                            if(pAsm->m_fCPlusPlus)  pParser->msg(" C++");
-                            if(pAsm->m_fWindowsCE)  pParser->msg(" WINCE");
                             if(!pAsm->m_fAutoInheritFromObject) pParser->msg(" NOAUTOINHERIT");
                             pParser->msg(IsDLL ? " to DLL" : (IsOBJ? " to OBJ" : " to EXE"));
                             //======================================================================
@@ -758,8 +756,6 @@ extern "C" int _cdecl wmain(int argc, __in WCHAR **argv)
                                         if(pAsm->m_fReportProgress)
                                         {
                                             pParser->msg("\nAssembling delta '%s' ", szInputFilename);
-                                            if(pAsm->m_fCPlusPlus)  pParser->msg(" C++");
-                                            if(pAsm->m_fWindowsCE)  pParser->msg(" WINCE");
                                             if(!pAsm->m_fAutoInheritFromObject) pParser->msg(" NOAUTOINHERIT");
                                             pParser->msg(" to DMETA,DIL");
                                             //======================================================================

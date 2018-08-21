@@ -47,7 +47,7 @@ typedef FIFO<TokenRelocDescr> TRDList;
 
 struct  ARG_NAME_LIST
 {
-    LPCUTF8 szName; //szName[1024];
+    LPCUTF8 szName;
     DWORD dwName;
     BinStr*   pSig; // argument's signature  ptr
     BinStr*   pMarshal;
@@ -59,8 +59,6 @@ struct  ARG_NAME_LIST
     __forceinline ARG_NAME_LIST(int i, LPCUTF8 sz, BinStr *pbSig, BinStr *pbMarsh, DWORD attr)
     {
         nNum = i;
-        //dwName = (DWORD)strlen(sz);
-        //strcpy(szName,sz);
         szName = sz;
         dwName = (sz == NULL) ? 0 : (DWORD)strlen(sz);
         pNext = NULL;
@@ -112,7 +110,6 @@ typedef FIFO<VarDescr> VarDescrList;
 
 struct Label
 {
-//public:
     LPCUTF8  m_szName;
     DWORD   m_PC;
 
@@ -120,10 +117,8 @@ struct Label
     Label(LPCUTF8 pszName, DWORD PC):m_szName(pszName),m_PC(PC){};
     ~Label(){ delete [] m_szName; };
     int ComparedTo(Label* L) { return strcmp(m_szName,L->m_szName); };
-    //int Compare(char* L) { return strcmp(L,m_szName); };
     LPCUTF8 NameOf() { return m_szName; };
 };
-//typedef SORTEDARRAY<Label> LabelList;
 typedef FIFO_INDEXED<Label> LabelList;
 
 class GlobalFixup
@@ -183,8 +178,6 @@ class Method
 {
 public:
     Class  *m_pClass;
-    //BinStr **m_TyParBounds;
-    //LPCWSTR *m_TyParNames;
     TyParDescr* m_TyPars;
     DWORD   m_NumTyPars;
     GenericParamConstraintList m_GPCList;
@@ -230,7 +223,6 @@ public:
     CustomDescrList m_RetCustDList;
     ILFixupList     m_lstILFixup;
     FixupList       m_lstFixup;
-//    LabelList       m_lstLabel;
     // Member ref fixups
     LocalMemberRefFixupList  m_LocalMemberRefFixupList;
     // Method body (header+code+EH)
@@ -240,7 +232,6 @@ public:
     ~Method()
     {
         m_lstFixup.RESET(true);
-        //m_lstLabel.RESET(true);
         delete [] m_szName;
         if(m_szExportAlias) delete [] m_szExportAlias;
         delArgNameList(m_firstArgName);

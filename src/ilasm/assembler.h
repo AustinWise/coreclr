@@ -244,14 +244,8 @@ public:
         return (m_Hash == L->m_Hash) ? strcmp(m_szName, L->m_szName)
                                      : ((m_Hash > L->m_Hash) ? 1 : -1);
     }
-
-    //int ComparedTo(GlobalLabel* L) { return strcmp(m_szName,L->m_szName); };
-    //int Compare(char* L) { return strcmp(L, m_szNam); };
-    //char* NameOf() { return m_szName; };
 };
-//typedef SORTEDARRAY<GlobalLabel> GlobalLabelList;
 typedef RBTREE<GlobalLabel> GlobalLabelList;
-//typedef FIFO_INDEXED<GlobalLabel> GlobalLabelList;
 
 class CeeFileGenWriter;
 class CeeSection;
@@ -375,7 +369,6 @@ typedef FIFO<PropDescriptor> PropDList;
 struct ImportDescriptor
 {
     char*   szDllName;
-//    char   szDllName[MAX_FILENAME_LENGTH];
     DWORD  dwDllName;
     mdModuleRef mrDll;
     ImportDescriptor(__in __nullterminated char* sz, DWORD l)
@@ -405,9 +398,7 @@ typedef FIFO<ImportDescriptor> ImportList;
 #include "class.hpp"
 typedef LIFO<Class> ClassStack;
 typedef FIFO<Class> ClassList;
-//typedef SORTEDARRAY<Class> ClassHash;
 typedef RBTREE<Class> ClassHash;
-//typedef FIFO_INDEXED<Class> ClassHash;
 
 /**************************************************************************/
 /* Classes to hold lists of security permissions and permission sets. We build
@@ -696,7 +687,6 @@ struct TypeDefDescr
     };
     ~TypeDefDescr() { delete [] m_szName; delete m_pbsTypeSpec; };
     int ComparedTo(TypeDefDescr* T) { return strcmp(m_szName,T->m_szName); };
-    //int Compare(char* T) { return strcmp(T,m_szName); };
 };
 typedef SORTEDARRAY<TypeDefDescr> TypeDefDList;
 
@@ -789,16 +779,14 @@ public:
     AsmMan*     m_pManifest;
 
     char    m_szScopeName[MAX_SCOPE_LENGTH];
-    char    *m_szNamespace; //[MAX_NAMESPACE_LENGTH];
-    char    *m_szFullNS; //[MAX_NAMESPACE_LENGTH];
+    char    *m_szNamespace;
+    char    *m_szFullNS;
 	unsigned	m_ulFullNSLen;
 
     WCHAR   *m_wzMetadataVersion;
 
     StringStack m_NSstack;
     mdTypeSpec      m_crExtends;
-
-    //    char    m_szExtendsClause[MAX_CLASSNAME_LENGTH];
 
     // The (resizable) array of "implements" types
     mdToken   *m_crImplList;
@@ -812,11 +800,6 @@ public:
     ClassStack m_ClassStack; // for nested classes
     Class   *dummyClass; // for FindCreateClass
 
-    // moved to Class
-    //MethodList  m_MethodList;
-
-    BOOL    m_fCPlusPlus;
-    BOOL    m_fWindowsCE;
     BOOL    m_fDLL;
     BOOL    m_fOBJ;
     BOOL    m_fEntryPointPresent;
@@ -853,7 +836,6 @@ public:
     void ProcessLabel(__in_z __in char *pszName);
     GlobalLabel *FindGlobalLabel(LPCUTF8 pszName);
     GlobalFixup *AddDeferredGlobalFixup(__in __nullterminated char *pszLabel, BYTE* reference);
-    //void AddDeferredDescrFixup(__in __nullterminated char *pszLabel);
     BOOL DoGlobalFixups();
     BOOL DoDescrFixups();
     OPCODE DecodeOpcode(const BYTE *pCode, DWORD *pdwLen);

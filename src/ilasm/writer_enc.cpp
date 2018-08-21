@@ -10,7 +10,6 @@
 
 #include "assembler.h"
 
-//#include "ceefilegenwriter.h"
 #include "strongname.h"
 
 int ist=0;
@@ -464,84 +463,8 @@ REPT_STEP
         if (FAILED(hr=m_pCeeFileGen->SetManifestEntry(m_pCeeFile, mresourceSize, 0))) goto exit;
     }
 REPT_STEP
-    /*
-    if (m_fWindowsCE)
-    {
-        if (FAILED(hr=m_pCeeFileGen->SetSubsystem(m_pCeeFile, IMAGE_SUBSYSTEM_WINDOWS_CE_GUI, 2, 10))) goto exit;
-
-        if (FAILED(hr=m_pCeeFileGen->SetImageBase(m_pCeeFile, 0x10000))) goto exit;
-    }
-    else if(m_dwSubsystem != (DWORD)-1)
-    {
-        if (FAILED(hr=m_pCeeFileGen->SetSubsystem(m_pCeeFile, m_dwSubsystem, 4, 0))) goto exit;
-    }
-    
-    if (FAILED(hr=m_pCeeFileGen->ClearComImageFlags(m_pCeeFile, COMIMAGE_FLAGS_ILONLY))) goto exit;
-    if (FAILED(hr=m_pCeeFileGen->SetComImageFlags(m_pCeeFile, m_dwComImageFlags & ~COMIMAGE_FLAGS_STRONGNAMESIGNED))) goto exit;
-
-    if(m_dwFileAlignment)
-    {
-        if(FAILED(hr=m_pCeeFileGen->SetFileAlignment(m_pCeeFile, m_dwFileAlignment))) goto exit;
-    }
-    if(m_stBaseAddress)
-    {
-        if(FAILED(hr=m_pCeeFileGen->SetImageBase(m_pCeeFile, m_stBaseAddress))) goto exit;
-    }
-    */
-REPT_STEP
         //Compute all the RVAs
     if (FAILED(hr=m_pCeeFileGen->LinkCeeFile(m_pCeeFile))) goto exit;
-
-REPT_STEP
-        // Fix up any fields that have RVA associated with them
-/*
-    if (m_fHaveFieldsWithRvas) {
-        hr = S_OK;
-        ULONG dataSectionRVA;
-        if (FAILED(hr=m_pCeeFileGen->GetSectionRVA(m_pGlobalDataSection, &dataSectionRVA))) goto exit;
-        
-        ULONG tlsSectionRVA;
-        if (FAILED(hr=m_pCeeFileGen->GetSectionRVA(m_pTLSSection, &tlsSectionRVA))) goto exit;
-
-        FieldDescriptor* pListFD;
-        Class* pClass;
-        for(int i=0; (pClass = m_lstClass.PEEK(i)); i++)
-        {
-            for(int j=0; (pListFD = pClass->m_FieldDList.PEEK(j)); j++)
-            {
-                if (pListFD->m_rvaLabel != 0) 
-                {
-                    DWORD rva;
-                    if(*(pListFD->m_rvaLabel)=='@')
-                    {
-                        rva = (DWORD)atoi(pListFD->m_rvaLabel + 1);
-                    }
-                    else
-                    {
-                        GlobalLabel *pLabel = FindGlobalLabel(pListFD->m_rvaLabel);
-                        if (pLabel == 0)
-                        {
-                            report->msg("Error:Could not find label '%s' for the field '%s'\n", pListFD->m_rvaLabel, pListFD->m_szName);
-                            hr = E_FAIL;
-                            continue;
-                        }
-                    
-                        rva = pLabel->m_GlobalOffset;
-                        if (pLabel->m_Section == m_pTLSSection)
-                            rva += tlsSectionRVA;
-                        else {
-                            _ASSERTE(pLabel->m_Section == m_pGlobalDataSection);
-                            rva += dataSectionRVA;
-                        }
-                    }
-                    if (FAILED(m_pEmitter->SetFieldRVA(pListFD->m_fdFieldTok, rva))) goto exit;
-                }
-            }
-        }
-        if (FAILED(hr)) goto exit;
-    }
-REPT_STEP
-*/
 
 REPT_STEP
     // actually output the resources

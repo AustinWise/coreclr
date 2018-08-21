@@ -113,11 +113,9 @@ Label *Method::FindLabel(LPCUTF8 pszName)
 {
     Label lSearch(pszName,0), *pL;
     lSearch.m_szName = pszName;
-    //pL =  m_lstLabel.FIND(&lSearch);
     pL =  m_pAssembler->m_lstLabel.FIND(&lSearch);
     lSearch.m_szName = NULL;
     return pL;
-    //return  m_lstLabel.FIND(pszName);
 }
 
 
@@ -125,7 +123,6 @@ Label *Method::FindLabel(DWORD PC)
 {
     Label *pSearch;
 
-    //for (int i = 0; (pSearch = m_lstLabel.PEEK(i)); i++)
     for (int i = 0; (pSearch = m_pAssembler->m_lstLabel.PEEK(i)); i++)
     {
         if (pSearch->m_PC == PC)

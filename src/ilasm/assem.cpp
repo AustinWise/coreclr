@@ -32,8 +32,6 @@ Assembler::Assembler()
     m_pEmitter = NULL;
     m_pImporter = NULL;
 
-    m_fCPlusPlus = FALSE;
-    m_fWindowsCE = FALSE;
     char* pszFQN = new char[16];
     strcpy_s(pszFQN,16,"<Module>");
     m_pModuleClass = new Class(pszFQN);
@@ -1176,19 +1174,10 @@ BOOL Assembler::EmitClass(Class *pClass)
     LPCUTF8              szFullName;
     WCHAR*              wzFullName=&wzUniBuf[0];
     HRESULT             hr = E_FAIL;
-    GUID                guid;
     size_t              L;
     mdToken             tok;
 
     if(pClass == NULL) return FALSE;
-
-    hr = CoCreateGuid(&guid);
-    if (FAILED(hr))
-    {
-        printf("Unable to create GUID\n");
-        m_State = STATE_FAIL;
-        return FALSE;
-    }
 
     if(pClass->m_pEncloser)
         szFullName = strrchr(pClass->m_szFQN,NESTING_SEP) + 1;
@@ -1315,7 +1304,6 @@ void Assembler::AddLabel(DWORD CurPC, __in __nullterminated char *pszName)
         Label *pNew = new Label(pszName, CurPC);
 
         if (pNew != NULL)
-            //m_pCurMethod->m_lstLabel.PUSH(pNew);
             m_lstLabel.PUSH(pNew);
         else
         {
