@@ -536,39 +536,13 @@ void VirtualCallStubManager::Init(BaseDomain *pDomain, LoaderAllocator *pLoaderA
     // in order to minimize the fragmentation of our rangelists
     //
 
-    if (parentDomain->IsDefaultDomain())
-    {
-        indcell_heap_commit_size     = 16;        indcell_heap_reserve_size      = 2000;
-        cache_entry_heap_commit_size = 16;        cache_entry_heap_reserve_size  =  800;
+    indcell_heap_commit_size     = 16;        indcell_heap_reserve_size      = 2000;
+    cache_entry_heap_commit_size = 16;        cache_entry_heap_reserve_size  =  800;
 
-        lookup_heap_commit_size      = 24;        lookup_heap_reserve_size       =  250;
-        dispatch_heap_commit_size    = 24;        dispatch_heap_reserve_size     =  600;
-        resolve_heap_commit_size     = 24;        resolve_heap_reserve_size      =  300;
-        vtable_heap_commit_size      = 24;        vtable_heap_reserve_size       =  600;
-    }
-    else if (parentDomain->IsSharedDomain())
-    {
-        indcell_heap_commit_size     = 16;        indcell_heap_reserve_size      =  100;
-#ifdef BIT64 
-                                                  indcell_heap_reserve_size      = 2000;
-#endif
-        cache_entry_heap_commit_size = 16;        cache_entry_heap_reserve_size  =  500;
-
-        lookup_heap_commit_size      = 24;        lookup_heap_reserve_size       =  200;
-        dispatch_heap_commit_size    = 24;        dispatch_heap_reserve_size     =  450;
-        resolve_heap_commit_size     = 24;        resolve_heap_reserve_size      =  200;
-        vtable_heap_commit_size      = 24;        vtable_heap_reserve_size       =  450;
-    }
-    else
-    {
-        indcell_heap_commit_size     = 8;         indcell_heap_reserve_size      = 8;
-        cache_entry_heap_commit_size = 8;         cache_entry_heap_reserve_size  = 8;
-
-        lookup_heap_commit_size      = 8;         lookup_heap_reserve_size       = 8;
-        dispatch_heap_commit_size    = 8;         dispatch_heap_reserve_size     = 8;
-        resolve_heap_commit_size     = 8;         resolve_heap_reserve_size      = 8;
-        vtable_heap_commit_size      = 8;         vtable_heap_reserve_size       = 8;
-    }
+    lookup_heap_commit_size      = 24;        lookup_heap_reserve_size       =  250;
+    dispatch_heap_commit_size    = 24;        dispatch_heap_reserve_size     =  600;
+    resolve_heap_commit_size     = 24;        resolve_heap_reserve_size      =  300;
+    vtable_heap_commit_size      = 24;        vtable_heap_reserve_size       =  600;
 
 #ifdef BIT64
     // If we're on 64-bit, there's a ton of address space, so reserve more space to
@@ -1060,7 +1034,7 @@ BOOL VirtualCallStubManager::CheckIsStub_Internal(PCODE stubStartAddress)
     BOOL fIsOwner = isStub(stubStartAddress);
 
 #if defined(_TARGET_X86_) && defined(FEATURE_PREJIT)
-    if (!fIsOwner && parentDomain->IsDefaultDomain())
+    if (!fIsOwner)
     {
         fIsOwner = (stubStartAddress == GetEEFuncEntryPoint(StubDispatchFixupStub));
     }
@@ -1779,16 +1753,8 @@ PCODE VirtualCallStubManager::ResolveWorker(StubCallSite* pCallSite,
     BOOL bCallToShorterLivedTarget = FALSE;
 
     // We care about the following cases:
-    // Call from shared domain -> domain-specific target (collectible or not)
     // Call from any site -> collectible target
-    if (parentDomain->IsSharedDomain())
-    {
-        // The callee's manager
-        pCalleeMgr = objectType->GetLoaderAllocator()->GetVirtualCallStubManager();
-        // We already know that we are the shared manager, so we can just see if the callee has the same manager
-        bCallToShorterLivedTarget = (pCalleeMgr != this);
-    }
-    else if (objectType->GetLoaderAllocator()->IsCollectible())
+    if (objectType->GetLoaderAllocator()->IsCollectible())
     {
         // The callee's manager
         pCalleeMgr = objectType->GetLoaderAllocator()->GetVirtualCallStubManager();
@@ -3119,9 +3085,6 @@ void VirtualCallStubManager::LogStats()
         return;
     }
 
-    BOOL isShared  = parentDomain->IsSharedDomain();
-    BOOL isDefault = parentDomain->IsDefaultDomain();
-
     // Temp space to use for formatting the output.
     static const int FMT_STR_SIZE = 160;
     char szPrintStr[FMT_STR_SIZE];
@@ -3129,8 +3092,7 @@ void VirtualCallStubManager::LogStats()
 
     if (g_hStubLogFile && (stats.site_write != 0))
     {
-        sprintf_s(szPrintStr, COUNTOF(szPrintStr), "\r\nStats for %s Manager\r\n", isShared  ? "the Shared"  :
-                                                            isDefault ? "the Default" : "an Unshared");
+        sprintf_s(szPrintStr, COUNTOF(szPrintStr), "\r\nStats for the Default Manager\r\n");
         WriteFile (g_hStubLogFile, szPrintStr, (DWORD) strlen(szPrintStr), &dwWriteByte, NULL);
 
         //output counters

@@ -955,9 +955,6 @@ public:
 
     virtual BOOL IsAppDomain()    { LIMITED_METHOD_DAC_CONTRACT; return FALSE; }
 
-    BOOL IsSharedDomain() { LIMITED_METHOD_DAC_CONTRACT; return FALSE; }
-    BOOL IsDefaultDomain() { LIMITED_METHOD_DAC_CONTRACT; return TRUE; }
-
     PTR_LoaderAllocator GetLoaderAllocator();
     virtual PTR_AppDomain AsAppDomain()
     {
@@ -3026,10 +3023,6 @@ public:
     // and publishing it in the IPC block
     static void PublishAppDomainAndInformDebugger (AppDomain *pDomain);
 #endif // DEBUGGING_SUPPORTED
-
-    //****************************************************************************************
-    // Helper function to remove a domain from the system
-    BOOL RemoveDomain(AppDomain* pDomain); // Does not decrement the reference
 
 #ifdef PROFILING_SUPPORTED
     //****************************************************************************************

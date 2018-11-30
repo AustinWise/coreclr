@@ -2778,9 +2778,6 @@ void Thread::PreWorkForThreadAbort()
     if (IsRudeAbort()) {
         if (HasLockInCurrentDomain()) {
             AppDomain *pDomain = GetAppDomain();
-            // Cannot enable the following assertion.
-            // We may take the lock, but the lock will be released during exception backout.
-            //_ASSERTE(!pDomain->IsDefaultDomain());
             EPolicyAction action = GetEEPolicy()->GetDefaultAction(OPR_ThreadRudeAbortInCriticalRegion, this);
             switch (action)
             {

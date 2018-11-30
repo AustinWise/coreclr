@@ -769,23 +769,7 @@ void BaseDomain::InitVSD()
 {
     STANDARD_VM_CONTRACT;
 
-    // This is a workaround for gcc, since it fails to successfully resolve
-    // "TypeIDMap::STARTING_SHARED_DOMAIN_ID" when used within the ?: operator.
-    UINT32 startingId;
-    if (IsSharedDomain())
-    {
-        startingId = TypeIDMap::STARTING_SHARED_DOMAIN_ID;
-    }
-    else
-    {
-        startingId = TypeIDMap::STARTING_UNSHARED_DOMAIN_ID;
-    }
-
-    // By passing false as the last parameter, interfaces loaded in the
-    // shared domain will not be given fat type ids if RequiresFatDispatchTokens
-    // is set. This is correct, as the fat dispatch tokens are only needed to solve
-    // uniqueness problems involving domain specific types.
-    m_typeIDMap.Init(startingId, 2, !IsSharedDomain());
+    m_typeIDMap.Init(TypeIDMap::STARTING_UNSHARED_DOMAIN_ID, 2);
 
 #ifndef CROSSGEN_COMPILE
     GetLoaderAllocator()->InitVirtualCallStubManager(this);
@@ -2681,30 +2665,6 @@ void SystemDomain::AddDomain(AppDomain* pDomain)
     LOG((LF_CORDB, LL_INFO1000, "SD::AD:Would have added domain here! 0x%x\n",
         pDomain));
 }
-
-BOOL SystemDomain::RemoveDomain(AppDomain* pDomain)
-{
-    CONTRACTL
-    {
-        NOTHROW;
-        GC_TRIGGERS;
-        MODE_ANY;
-        PRECONDITION(CheckPointer(pDomain));
-        PRECONDITION(!pDomain->IsDefaultDomain());    
-    }
-    CONTRACTL_END;
-
-    // You can not remove the default domain.
-
-
-    if (!pDomain->IsActive())
-        return FALSE;
-
-    pDomain->Release();
-
-    return TRUE;
-}
-
 
 #ifdef PROFILING_SUPPORTED
 void SystemDomain::NotifyProfilerStartup()

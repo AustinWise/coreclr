@@ -8763,18 +8763,10 @@ CordbAppDomain * CordbProcess::CacheAppDomain(VMPTR_AppDomain vmAppDomain)
     // The cache will take ownership.
     m_appDomains.AddBaseOrThrow(pAppDomain);
 
-    // see if this is the default AppDomain
-    IDacDbiInterface * pDac = m_pProcess->GetDAC();
-    BOOL               fIsDefaultDomain = FALSE;
-
-    fIsDefaultDomain = pDac->IsDefaultDomain(vmAppDomain); // throws
-
-    if (fIsDefaultDomain)
-    {
-        // If this assert fires, then it likely means the target is corrupted.
-        TargetConsistencyCheck(m_pDefaultAppDomain == NULL);
-        m_pDefaultAppDomain = pAppDomain;
-    }
+    // If this assert fires, then it likely means the target is corrupted.
+    TargetConsistencyCheck(m_pDefaultAppDomain == NULL);
+    // There is only one domain in CoreCLR and it is the default domain.
+    m_pDefaultAppDomain = pAppDomain;
 
     CordbAppDomain * pReturn = pAppDomain;
     pAppDomain.ClearAndMarkDontNeuter();

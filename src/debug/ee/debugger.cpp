@@ -9461,33 +9461,11 @@ void Debugger::SendExitAppDomainEvent(AppDomain* pRuntimeAppDomain)
 
     if (CORDebuggerAttached())
     {
-        if (pRuntimeAppDomain->IsDefaultDomain() )
-        {
-            // The Debugger expects to never get an unload event for the default Domain.
-            // Currently we should never get here because g_fProcessDetach will be true by
-            // the time this method is called.  However, we'd like to know if this ever changes
-            _ASSERTE(!"Trying to deliver notification of unload for default domain" );
-            return;
-        }
-
-        // Send the exit appdomain event to the Right Side.
-        DebuggerIPCEvent* ipce = m_pRCThread->GetIPCEventSendBuffer();
-        InitIPCEvent(ipce,
-                     DB_IPCE_EXIT_APP_DOMAIN,
-                     thread,
-                     pRuntimeAppDomain);
-        m_pRCThread->SendIPCEvent();
-
-        // Delete any left over modules for this appdomain.
-        // Note that we're doing this under the lock.
-        if (m_pModules != NULL)
-        {
-            DebuggerDataLockHolder ch(this);
-            m_pModules->RemoveModules(pRuntimeAppDomain);
-        }
-
-        // Stop all Runtime threads
-        TrapAllRuntimeThreads();
+        // The Debugger expects to never get an unload event for the default Domain.
+        // Currently we should never get here because g_fProcessDetach will be true by
+        // the time this method is called.  However, we'd like to know if this ever changes
+        _ASSERTE(!"Trying to deliver notification of unload for default domain" );
+        return;
     }
     else
     {
