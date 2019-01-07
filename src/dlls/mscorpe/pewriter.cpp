@@ -1775,12 +1775,14 @@ HRESULT PEWriter::fixup(CeeGenTokenMapper *pMapper)
         if (reloc->m_header->Misc.VirtualSize == VAL32(0))
         {
             //
-            // Omit reloc section from section list.  (It will
-            // still be there but the loader won't see it - this
+            // Omit reloc section from section list.  (This
             // only works because we've allocated it as the last
             // section.)
             //
-            m_ntHeaders->FileHeader.NumberOfSections = VAL16(VAL16(m_ntHeaders->FileHeader.NumberOfSections) - 1);
+            int newNumberOfSections = VAL16(m_ntHeaders->FileHeader.NumberOfSections) - 1;
+            m_ntHeaders->FileHeader.NumberOfSections = VAL16(newNumberOfSections);
+            headersEnd--;
+            _ASSERTE(headers + newNumberOfSections == headersEnd);
         }
         else
         {
